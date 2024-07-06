@@ -8,28 +8,31 @@
 import SwiftUI
 
 struct DessertsView: View {
-    // TODO: Deepdive into ObservedObject
     @ObservedObject var networkManager = NetworkManager()
     
     var body: some View {
-        Text("Desserts")
-        List(networkManager.desserts) { dessert in
-            // TODO: Create a clickable view for more details about the dessert selected
-            Text(dessert.strMeal)
-        }
-        .task { // TODO: .task vs .onAppear
-            do {
-                try await networkManager.getDesserts()
-            } catch DessertError.invalidURL {
-                print("invalid URL")
-            } catch DessertError.invalidData {
-                print("invalid Data")
-            } catch DessertError.invalidResponse {
-                print("invalid Response")
-            } catch {
-                print("unexpected Error")
+        
+        NavigationView(content:  {
+            List(networkManager.desserts) { dessert in
+                NavigationLink(destination: DetailView(mealId: dessert.id)) {
+                    Text(dessert.strMeal)
+                }
             }
-        }
+            .task {
+                do {
+                    try await networkManager.getDesserts()
+                } catch DessertError.invalidURL {
+                    print("invalid URL")
+                } catch DessertError.invalidData {
+                    print("invalid Data")
+                } catch DessertError.invalidResponse {
+                    print("invalid Response")
+                } catch {
+                    print("unexpected Error")
+                }
+            }
+            .navigationTitle("Desserts")
+        })
     }
 }
 

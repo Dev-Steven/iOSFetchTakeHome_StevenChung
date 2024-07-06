@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct DessertList: Decodable {
+struct DessertListData: Decodable {
     let meals: [Meal]
 }
 
